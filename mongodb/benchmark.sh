@@ -1,7 +1,6 @@
 #!/bin/bash
 
 sudo apt-get update
-sudo apt install -y faker
 
 # Download the dataset
 wget --no-verbose --continue 'https://rtadatasets.timescale.com/customers.csv.gz'

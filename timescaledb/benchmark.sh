@@ -1,7 +1,6 @@
 #!/bin/bash
 
 sudo apt-get update
-sudo apt install -y faker
 
 # Download the dataset
 wget --no-verbose --continue 'https://rtadatasets.timescale.com/customers.csv.gz'
@@ -39,11 +38,11 @@ sudo -u postgres psql test -c "SELECT create_hypertable('order_events', 'event_c
 sudo -u postgres psql test -c "SELECT * FROM enable_chunk_skipping('order_events', 'order_id');"
 sudo -u postgres psql test -c "ALTER TABLE order_events SET (timescaledb.compress, timescaledb.compress_segmentby = '', timescaledb.compress_orderby = 'order_id, event_created')" #import
 
-sudo -u postgres timescaledb-parallel-copy -table customers -file dataset/customers.csv --db-name test -connection "host=/var/run/postgresql"  -workers 8 #import
-sudo -u postgres timescaledb-parallel-copy -table products -file dataset/products.csv --db-name test -connection "host=/var/run/postgresql"  -workers 8 #import
-sudo -u postgres timescaledb-parallel-copy -table orders -file dataset/orders.csv --db-name test -connection "host=/var/run/postgresql"  -workers 8 #import
-sudo -u postgres timescaledb-parallel-copy -table order_items -file dataset/order_items.csv --db-name test -connection "host=/var/run/postgresql"  -workers 8 #import
-sudo -u postgres timescaledb-parallel-copy -table order_events -file dataset/order_events.csv --db-name test -connection "host=/var/run/postgresql"  -workers 8 #import
+sudo -u postgres timescaledb-parallel-copy -table customers -file dataset/customers.csv -connection "host=/var/run/postgresql dbname=test"  -workers 8 #import
+sudo -u postgres timescaledb-parallel-copy -table products -file dataset/products.csv -connection "host=/var/run/postgresql dbname=test"  -workers 8 #import
+sudo -u postgres timescaledb-parallel-copy -table orders -file dataset/orders.csv -connection "host=/var/run/postgresql dbname=test"  -workers 8 #import
+sudo -u postgres timescaledb-parallel-copy -table order_items -file dataset/order_items.csv -connection "host=/var/run/postgresql dbname=test"  -workers 8 #import
+sudo -u postgres timescaledb-parallel-copy -table order_events -file dataset/order_events.csv -connection "host=/var/run/postgresql dbname=test"  -workers 8 #import
 
 ./compress.sh #import
 

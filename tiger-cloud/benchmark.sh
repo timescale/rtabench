@@ -14,7 +14,7 @@ chmod 777 customers.csv products.csv orders.csv order_items.csv order_events.csv
 mkdir -p dataset
 mv *.csv dataset/
 
-# This benchmark uses terraform to provision an Timescale Cloud instance. https://www.timescale.com/blog/create-timescale-services-with-terraform-provider/
+# This benchmark uses terraform to provision a Tiger Cloud instance. https://www.timescale.com/blog/create-timescale-services-with-terraform-provider/
 
 # set in CI with github actions secrets and auto-benchmark tool
 # export TS_PROJECT_ID=...
@@ -87,7 +87,7 @@ terraform destroy -auto-approve -var region="$REGION" \
 
 echo "Real-time Analytics" #tag
 echo "General Purpose" #tag
-echo "Timescale Cloud" #name
+echo "Tiger Cloud" #name
 echo "Insert" #mv_supported_capability
 echo "Update" #mv_supported_capability
 echo "Upsert" #mv_supported_capability
