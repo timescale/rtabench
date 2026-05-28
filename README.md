@@ -72,7 +72,7 @@ The first version of the benchmark includes the databases listed below:
 | MySQL | ✅ | | |
 | PostgreSQL | ✅ | | |
 | PostgreSQL with TimescaleDB | ✅ | ✅ | |
-| Timescale Cloud | ✅ | ✅ | |
+| Tiger Cloud | ✅ | ✅ | |
 
 ## Rules and contributions
 RTABench is an open-source benchmark, and we encourage the community to contribute by:

@@ -14,7 +14,7 @@ chmod 777 customers.csv products.csv orders.csv order_items.csv order_events.csv
 mkdir -p dataset
 mv *.csv dataset/
 
-# This benchmark uses terraform to provision an Timescale Cloud instance. https://www.timescale.com/blog/create-timescale-services-with-terraform-provider/
+# This benchmark uses terraform to provision a ClickHouse Cloud instance.
 
 # set in CI with github actions secrets and auto-benchmark tool
 # export CLICKHOUSE_ORGANIZATION_ID=...
