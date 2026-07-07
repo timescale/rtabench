@@ -56,4 +56,5 @@ CREATE TABLE order_events
     backup_processor text,
     event_payload    text,
     PRIMARY KEY (order_id, event_created)
-) ENGINE = MergeTree;
+) ENGINE = MergeTree
+PARTITION BY toYYYYMM(event_created);
