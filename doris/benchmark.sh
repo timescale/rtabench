@@ -24,11 +24,13 @@ sudo apt-get install -y mysql-client openjdk-17-jre-headless
 # Deploy and configure
 export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
 sudo sysctl -w vm.max_map_count=2000000
-sudo sh -c ulimit -n 655350
+
 sudo swapoff -a
 
-${DORIS_FULL_NAME}/be/bin/start_be.sh --daemon
-${DORIS_FULL_NAME}/fe/bin/start_fe.sh --daemon
+# Start Doris with proper file descriptor limits using wrapper scripts
+echo "Starting Doris with file descriptor limits..."
+bash -c "ulimit -n 655350 && ${DORIS_FULL_NAME}/be/bin/start_be.sh --daemon"
+bash -c "ulimit -n 655350 && ${DORIS_FULL_NAME}/fe/bin/start_fe.sh --daemon"
 
 echo "Sleep 60 sec to wait doris start"
 sleep 60s
@@ -44,7 +46,7 @@ mysql -P 9030 -h 127.0.0.1 -u root -e "CREATE DATABASE rta"
 mysql -P 9030 -h 127.0.0.1 -u root -D rta < create.sql
 
 # Import dataset
-mysql -P 9030 -h 127.0.0.1 -u root -D rta --local-infile=1 < load.sql
+mysql -P 9030 -h 127.0.0.1 -u root -D rta --local-infile=1 < load.sql #import
 
 # Run the queries
 ./run.sh 2>&1 | tee log.txt
