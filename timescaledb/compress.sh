@@ -2,12 +2,11 @@
 
 WORKERS=8
 
-# we have to get the list of chunks to process outside of workers otherwise
-# show_chunks would lock the other workers out
-CHUNKS=$(sudo -u postgres psql test -t -X -c "SELECT string_agg('(''' || ch::text || ''')', ',') FROM (SELECT row_number() over (), * from show_chunks('order_events') ch) ch GROUP BY row_number%${WORKERS};")
-
-# start processes to compress in parallel
-for chunk in $(echo $CHUNKS); do
-  sudo -u postgres psql test -c "set client_min_messages to error;SELECT compress_chunk(c::regclass) FROM (VALUES $chunk) v(c);" &
-done
-wait
+# convert_to_columnstore is a procedure (since 2.18), so it must be invoked
+# with CALL — and CALL doesn't accept a result-set the way SELECT does, so
+# we can't batch chunks via a single VALUES list per worker. Instead, dump
+# the chunk list once (outside the parallel section to avoid show_chunks
+# locking) and fan one CALL per chunk across WORKERS via xargs -P.
+sudo -u postgres psql test -At -c "SELECT ch::text FROM show_chunks('order_events') ch;" \
+  | xargs -n 1 -P "$WORKERS" -I {} \
+      sudo -u postgres psql test -c "SET client_min_messages TO error; CALL convert_to_columnstore('{}'::regclass);"
